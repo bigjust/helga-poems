@@ -2,7 +2,7 @@
 from mock import Mock, patch
 
 from helga import settings
-from helga.util import twitter
+from helga_poems import util as twitter
 
 
 def test_is_properly_configured():
@@ -34,7 +34,7 @@ def test_message_max_handles_unicode():
     assert len(twitter.message_max(snowman2, 140)) == 1
 
 
-@patch('helga.util.twitter.get_api')
+@patch('helga_poems.util.get_api')
 def test_tweet(api):
     settings.TWITTER_CONSUMER_KEY = 'foo'
     settings.TWITTER_CONSUMER_SECRET = 'foo'
@@ -48,7 +48,7 @@ def test_tweet(api):
     assert twitter.tweet('foo') == 'http://twitter.com/helgabot/status/123456789'
 
 
-@patch('helga.util.twitter.get_api')
+@patch('helga_poems.util.get_api')
 def test_tweet_handles_unicode(api):
     settings.TWITTER_CONSUMER_KEY = 'foo'
     settings.TWITTER_CONSUMER_SECRET = 'foo'
@@ -62,16 +62,16 @@ def test_tweet_handles_unicode(api):
     assert twitter.tweet(u'☃') == 'http://twitter.com/helgabot/status/123456789'
 
 
-@patch('helga.util.twitter.message_140')
-@patch('helga.util.twitter.is_properly_configured')
+@patch('helga_poems.util.message_140')
+@patch('helga_poems.util.is_properly_configured')
 def test_tweet_with_improperly_configured_settings(configured, message_140):
     configured.return_value = False
     twitter.tweet('foobar')
     assert not message_140.called
 
 
-@patch('helga.util.twitter.tweepy')
-@patch('helga.util.twitter.settings')
+@patch('helga_poems.util.tweepy')
+@patch('helga_poems.util.settings')
 def test_get_api(settings, tweepy):
     settings.TWITTER_CONSUMER_KEY = 'foo'
     settings.TWITTER_CONSUMER_SECRET = 'foo'
