@@ -2,6 +2,7 @@ import random
 import re
 
 from collections import defaultdict
+from datetime import datetime
 
 from twisted.internet import reactor
 
@@ -233,6 +234,16 @@ def tweet(client, channel, requested_by):
         client.msg(channel, msg)
         return
 
+    # Avoid duplicate tweets
+    tweet_document = db.haiku.find_one({'poem': last})
+    if tweet_document:
+        client.msg(channel, u'Message already tweeted on: {}'.format(tweet_document['date']))
+        return
+    db.haiku.insert({
+        'poem': last,
+        'date': datetime.now().strftime("%b %d %Y %H:%M:%S"),
+    })
+
     resp = send_tweet('\n'.join(last))
 
     if not resp:
@@ -240,8 +251,6 @@ def tweet(client, channel, requested_by):
         client.msg(channel, msg)
         return
 
-    # This will keep it from over tweeting
-    del last_poem[channel]
     client.msg(channel, resp)
 
 
