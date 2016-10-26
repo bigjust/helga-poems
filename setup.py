@@ -27,7 +27,7 @@ if pip_version >= (1, 5):
 
 setup(
     name='helga-poems',
-    version='0.1.0',
+    version='0.2.0',
     description="A helga command to generate either haiku or tanka poems",
     classifiers=[
         'Development Status :: 4 - Beta',
